@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>MR Campaign Tracker — Malawi 2026 Measles-Rubella Campaign</title>
+  <meta name="description" content="Real-time readiness tracker for Malawi Measles-Rubella Campaign 2026. Monitor proposals, payments, liquidation across all districts.">
+  <meta name="theme-color" content="#1a4b6e">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1a4b6e;
+      --primary-dark: #0e3a56;
+      --primary-light: #2a6496;
+      --success: #27ae60;
+      --warning: #f39c12;
+      --danger: #e74c3c;
+      --info: #3498db;
+      --bg-dark: #0a1622;
+      --card-bg: rgba(255,255,255,0.03);
+      --text: #f0f4fa;
+      --text-muted: rgba(240,244,250,0.6);
+      --gradient: linear-gradient(135deg, #1a4b6e 0%, #2a6496 50%, #3498db 100%);
+      --gradient-warm: linear-gradient(135deg, #e67e22, #f39c12);
+    }
+
+    body {
+      font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: radial-gradient(ellipse at 20% 30%, rgba(26,75,110,0.3) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 70%, rgba(52,152,219,0.15) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    .floating-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      animation: float 20s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(26,75,110,0.25);
+      top: -100px;
+      left: -100px;
+      animation-duration: 25s;
+    }
+
+    .orb-2 {
+      width: 300px;
+      height: 300px;
+      background: rgba(52,152,219,0.2);
+      bottom: -80px;
+      right: -80px;
+      animation-duration: 18s;
+      animation-delay: -5s;
+    }
+
+    .orb-3 {
+      width: 250px;
+      height: 250px;
+      background: rgba(243,156,18,0.12);
+      top: 50%;
+      left: 70%;
+      animation-duration: 22s;
+      animation-delay: -10s;
+    }
+
+    @keyframes float {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(40px, 50px) scale(1.15); }
+    }
+
+    /* Main wrapper */
+    .wrapper {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 60px;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 32px 0 20px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .logo-text h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .logo-text p {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 60px 0 40px;
+      animation: fadeUp 0.8s ease-out;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(52,152,219,0.15);
+      border: 1px solid rgba(52,152,219,0.3);
+      padding: 8px 20px;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--info);
+      margin-bottom: 30px;
+    }
+
+    .hero-badge span {
+      width: 8px;
+      height: 8px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.2); }
+    }
+
+    .hero h1 {
+      font-size: clamp(42px, 8vw, 68px);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      background: var(--gradient-warm);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    /* CTA Button */
+    .cta-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .pulse-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 60px;
+      border: 2px solid rgba(52,152,219,0.4);
+      animation: pulse-ring 2s ease-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse-ring {
+      0% { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.08); }
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--gradient);
+      padding: 18px 42px;
+      border-radius: 60px;
+      color: white;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(26,75,110,0.4);
+      border: none;
+      cursor: pointer;
+    }
+
+    .cta-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(26,75,110,0.6);
+    }
+
+    .cta-button:active {
+      transform: translateY(0);
+    }
+
+    .cta-arrow {
+      font-size: 1.3rem;
+      transition: transform 0.2s;
+    }
+
+    .cta-button:hover .cta-arrow {
+      transform: translateX(5px);
+    }
+
+    .cta-note {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 24px;
+      margin: 60px 0;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 28px 20px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(52,152,219,0.3);
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Features */
+    .features {
+      margin: 60px 0;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 48px;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-3px);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .feature-icon {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Phone Mockup */
+    .phone-mockup {
+      display: flex;
+      justify-content: center;
+      margin: 60px 0;
+    }
+
+    .phone-frame {
+      background: linear-gradient(145deg, #1a1f2e, #0f1119);
+      border-radius: 48px;
+      padding: 16px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+      max-width: 280px;
+    }
+
+    .phone-screen {
+      background: var(--gradient);
+      border-radius: 32px;
+      aspect-ratio: 9/19;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .phone-icon {
+      width: 70px;
+      height: 70px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin-bottom: 20px;
+    }
+
+    .phone-screen h3 {
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+
+    .phone-screen p {
+      font-size: 0.8rem;
+      opacity: 0.8;
+    }
+
+    .demo-card {
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 16px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Install Guide */
+    .install-guide {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 28px;
+      padding: 40px;
+      margin: 60px 0;
+    }
+
+    .install-guide h3 {
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-top: 32px;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .step-content h4 {
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .step-content p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding-top: 40px;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .wrapper {
+        padding: 0 16px 40px;
+      }
+      
+      .hero {
+        padding: 40px 0 30px;
+      }
+      
+      .cta-button {
+        padding: 14px 32px;
+        font-size: 1rem;
+      }
+      
+      .stats-grid {
+        gap: 16px;
+      }
+      
+      .stat-number {
+        font-size: 1.8rem;
+      }
+      
+      .install-guide {
+        padding: 24px;
+      }
+      
+      .steps {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animation"></div>
+  <div class="floating-orb orb-1"></div>
+  <div class="floating-orb orb-2"></div>
+  <div class="floating-orb orb-3"></div>
+
+  <div class="wrapper">
+    <!-- Navigation -->
+    <nav>
+      <div class="logo">
+        <div class="logo-icon">📊</div>
+        <div class="logo-text">
+          <h1>MR Campaign Tracker</h1>
+          <p>Malawi 2026 · Measles-Rubella</p>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="hero-badge">
+        <span></span>
+        Live Campaign Readiness System
+      </div>
+      <h1>
+        Track your<br>
+        MR Campaign <em>in real-time</em>
+      </h1>
+      <p class="hero-sub">
+        Monitor proposals, payments, and liquidation across 29 districts. 
+        Complete visibility from submission to clearance.
+      </p>
+      
+      <!-- CTA Button with your link -->
+      <div class="cta-wrapper">
+        <div class="pulse-ring"></div>
+        <a href="https://script.google.com/macros/s/AKfycbw4Gc1jUu_h-p47hHdcN74hbkow-e_nzUZqKuxBAAS8j31kGGv2uzApvxgcvGaYaxTd/exec" 
+           class="cta-button" 
+           target="_blank" 
+           rel="noopener noreferrer">
+          <span>🚀 Launch Campaign Tracker</span>
+          <span class="cta-arrow">→</span>
+        </a>
+      </div>
+      <div class="cta-note">
+        <span>🔒 Secure Access</span>
+        <span>•</span>
+        <span>📱 Works on any device</span>
+        <span>•</span>
+        <span>⚡ Real-time updates</span>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">29</div>
+        <div class="stat-label">Districts</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">57+</div>
+        <div class="stat-label">Activities Tracked</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3</div>
+        <div class="stat-label">Campaign Phases</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">100%</div>
+        <div class="stat-label">Data Visibility</div>
+      </div>
+    </div>
+
+    <!-- Phone Mockup -->
+    <div class="phone-mockup">
+      <div class="phone-frame">
+        <div class="phone-screen">
+          <div class="phone-icon">📊</div>
+          <h3>MR Tracker</h3>
+          <p>Real-time dashboard</p>
+          <div class="demo-card">
+            <div style="font-size: 12px;">✅ Proposals: 85%</div>
+            <div style="font-size: 12px; margin-top: 8px;">💰 Payments: 72%</div>
+            <div style="font-size: 12px; margin-top: 8px;">📄 Cleared: 68%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Features -->
+    <div class="features">
+      <h2 class="section-title">Powerful Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Proposal Tracking</h3>
+          <p>Track proposal submission and approval status across all districts with deadline monitoring.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💰</div>
+          <h3>Payment Management</h3>
+          <p>Monitor payoutsheet receipt, payment status, and calculate processing days automatically.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <h3>Liquidation Status</h3>
+          <p>Track document submission, review status, pushbacks, and final clearance.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">👥</div>
+          <h3>Role-Based Access</h3>
+          <p>District-level permissions for Program Assistants and full access for Super Admins.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Install Guide -->
+    <div class="install-guide">
+      <h3>📱 Add to Home Screen</h3>
+      <p style="color: var(--text-muted);">Use MR Campaign Tracker like a native app — one tap from your home screen.</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h4>Open the Tracker</h4>
+            <p>Click "Launch Campaign Tracker" above to open the app in your browser.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h4>Tap Share Menu</h4>
+            <p>On iPhone: tap Share icon → "Add to Home Screen"<br>On Android: tap menu ⋮ → "Add to Home Screen"</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h4>Launch Anytime</h4>
+            <p>The app icon will appear on your home screen for instant access.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div style="text-align: center; margin: 48px 0 32px;">
+      <a href="https://script.google.com/macros/s/AKfycbw4Gc1jUu_h-p47hHdcN74hbkow-e_nzUZqKuxBAAS8j31kGGv2uzApvxgcvGaYaxTd/exec" 
+         class="cta-button" 
+         target="_blank" 
+         rel="noopener noreferrer">
+        <span>📊 Access Dashboard Now</span>
+        <span class="cta-arrow">→</span>
+      </a>
+      <p style="margin-top: 20px; color: var(--text-muted); font-size: 0.85rem;">
+        Authorized users only · Secure login required
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2026 Ministry of Health, Malawi · Measles-Rubella Campaign Readiness Tracker</p>
+      <p style="margin-top: 8px;">Version 2.0 | All data is secure and encrypted</p>
+    </footer>
+  </div>
+
+  <script>
+    // Smooth scroll and analytics (optional)
+    document.querySelectorAll('.cta-button').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        // You can add analytics tracking here if needed
+        console.log('Launching MR Campaign Tracker');
+      });
+    });
+    
+    // Add animation on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.stat-card, .feature-card, .install-guide').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'all 0.6s ease';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
